@@ -2,7 +2,7 @@ version: "3.3"
 
 services:
   minio-server:
-    image: minio/minio:RELEASE.2024-08-28T19-49-43Z # 建议指定具体版本
+    image: minio/minio:RELEASE.2024-06-06T09-36-42Z # 建议指定具体版本
     container_name: minio-server
     ports:
       - "9000:9000"   # API端口，用于程序连接
