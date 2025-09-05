@@ -1,0 +1,20 @@
+version: "3.3"
+
+services:
+  minio-server:
+    image: minio/minio:RELEASE.2024-08-28T19-49-43Z # 建议指定具体版本
+    container_name: minio-server
+    ports:
+      - "9000:9000"   # API端口，用于程序连接
+      - "9090:9090"   # 控制台端口，用于浏览器访问
+    volumes:
+      - ./minio_data:/data  # 挂载数据目录
+    environment:
+      MINIO_ROOT_USER: minioadmin     # 设置默认管理账号
+      MINIO_ROOT_PASSWORD: minioadmin123 # 设置默认管理密码
+    command: server /data --console-address ":9090" # 启动服务并指定控制台端口
+    restart: unless-stopped # 容器退出时总是重启，除非手动停止
+
+networks:
+  default:
+    name: minio_network
