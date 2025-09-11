@@ -241,6 +241,36 @@ func (c *Client) DownloadToWriter(ctx context.Context, objectName string, writer
 	return nil
 }
 
+// DownloadToMemory 下载文件到memory并返回字节切片
+func (c *Client) DownloadToMemory(ctx context.Context, objectName string, writer io.Writer, opts ...models.DownloadOptions) ([]byte, error) {
+	if c.client == nil {
+		return nil, errors.ErrClientNotInitialized
+	}
+
+	var downloadOpts models.DownloadOptions
+	if len(opts) > 0 {
+		downloadOpts = opts[0]
+	}
+
+	minioGetOpts := minio.GetObjectOptions{}
+	if downloadOpts.VersionID != "" {
+		minioGetOpts.VersionID = downloadOpts.VersionID
+	}
+
+	object, err := c.client.GetObject(ctx, c.bucketName, objectName, minioGetOpts)
+	if err != nil {
+		c.logger.Print("Failed to get object:", err)
+		return nil, fmt.Errorf("%w: %v", errors.ErrDownloadFailed, err)
+	}
+	defer object.Close()
+	data, err := io.ReadAll(object)
+	if err != nil {
+		c.logger.Print("Failed to read object data:", err)
+		return nil, fmt.Errorf("failed to read object data: %w", err)
+	}
+	return data, nil
+}
+
 // ObjectExists 检查对象是否存在
 func (c *Client) ObjectExists(ctx context.Context, objectName string) (bool, error) {
 	if c.client == nil {
