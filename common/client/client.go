@@ -242,7 +242,7 @@ func (c *Client) DownloadToWriter(ctx context.Context, objectName string, writer
 }
 
 // DownloadToMemory 下载文件到memory并返回字节切片
-func (c *Client) DownloadToMemory(ctx context.Context, objectName string, writer io.Writer, opts ...models.DownloadOptions) ([]byte, error) {
+func (c *Client) DownloadToMemory(ctx context.Context, objectName string, opts ...models.DownloadOptions) ([]byte, error) {
 	if c.client == nil {
 		return nil, errors.ErrClientNotInitialized
 	}
